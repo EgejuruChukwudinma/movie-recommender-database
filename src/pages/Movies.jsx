@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 
 export default function Movies() {
   const [searchParams] = useSearchParams();
@@ -44,12 +44,17 @@ export default function Movies() {
 
       <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {movies.map((movie) => (
-          <div
+          <Link
+            to={`/movies/${movie.imdbID}`}
             key={movie.imdbID}
-            className="bg-white shadow rounded-lg overflow-hidden"
+            className="bg-white shadow rounded-lg overflow-hidden hover:shadow-lg transition block"
           >
             <img
-              src={movie.Poster !== "N/A" ? movie.Poster : "https://via.placeholder.com/300x450"}
+              src={
+                movie.Poster !== "N/A"
+                  ? movie.Poster
+                  : "https://via.placeholder.com/300x450"
+              }
               alt={movie.Title}
               className="w-full h-80 object-cover"
             />
@@ -57,7 +62,7 @@ export default function Movies() {
               <h3 className="font-bold text-lg">{movie.Title}</h3>
               <p className="text-gray-600">{movie.Year}</p>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

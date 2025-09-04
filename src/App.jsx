@@ -1,29 +1,21 @@
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Movies from "./pages/Movies";
 import About from "./pages/About";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import MovieDetails from "./pages/MovieDetails"; // 👈 import
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen flex flex-col bg-gray-50 text-gray-900">
-        {/* Header */}
-        <Header />
-
-        {/* Main content */}
-        <main className="flex-grow container mx-auto px-4 py-6">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/movies" element={<Movies />} />
-            <Route path="/about" element={<About />} />
-          </Routes>
-        </main>
-
-        {/* Footer */}
-        <Footer />
-      </div>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="movies" element={<Movies />} />
+          <Route path="movies/:id" element={<MovieDetails />} /> {/* 👈 details page */}
+          <Route path="about" element={<About />} />
+        </Route>
+      </Routes>
     </Router>
   );
 }
