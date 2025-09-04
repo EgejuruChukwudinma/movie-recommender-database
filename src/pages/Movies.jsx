@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
+import { useFavorites } from "../context/FavoritesContext";
 
 export default function Movies() {
   const [searchParams] = useSearchParams();
@@ -8,6 +9,13 @@ export default function Movies() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  // filters
+  const [year, setYear] = useState("");
+  const [type, setType] = useState("");
+
+  // favorites context
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
+
   useEffect(() => {
     if (!query) return;
 
@@ -15,17 +23,23 @@ export default function Movies() {
       setLoading(true);
       setError("");
       try {
-        const res = await fetch(
-          `https://www.omdbapi.com/?apikey=${import.meta.env.VITE_OMDB_API_KEY}&s=${query}`
-        );
+        let url = `https://www.omdbapi.com/?apikey=${
+          import.meta.env.VITE_OMDB_API_KEY
+        }&s=${query}`;
+
+        if (year) url += `&y=${year}`;
+        if (type) url += `&type=${type}`;
+
+        const res = await fetch(url);
         const data = await res.json();
 
         if (data.Response === "True") {
           setMovies(data.Search);
         } else {
           setError(data.Error || "No results found");
+          setMovies([]);
         }
-      } catch (err) {
+      } catch {
         setError("Failed to fetch movies");
       } finally {
         setLoading(false);
@@ -33,37 +47,92 @@ export default function Movies() {
     };
 
     fetchMovies();
-  }, [query]);
+  }, [query, year, type]);
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Results for: {query}</h2>
+      {/* Title */}
+      <h2 className="text-2xl font-bold mb-4">
+        {query ? `Results for: "${query}"` : "Search for a movie"}
+      </h2>
 
-      {loading && <p>Loading...</p>}
+      {/* Filter Section */}
+      <div className="flex flex-wrap gap-4 mb-6 items-center">
+        <input
+          type="number"
+          placeholder="Year (e.g. 2020)"
+          value={year}
+          onChange={(e) => setYear(e.target.value)}
+          className="border rounded px-3 py-2 w-40"
+        />
+
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className="border rounded px-3 py-2"
+        >
+          <option value="">All Types</option>
+          <option value="movie">Movies</option>
+          <option value="series">Series</option>
+          <option value="episode">Episodes</option>
+        </select>
+
+        <button
+          onClick={() => {
+            setYear("");
+            setType("");
+          }}
+          className="bg-gray-200 px-3 py-2 rounded hover:bg-gray-300 transition"
+        >
+          Reset
+        </button>
+      </div>
+
+      {/* Loading & Error */}
+      {loading && <p className="text-gray-500">Loading movies...</p>}
       {error && <p className="text-red-500">{error}</p>}
 
-      <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {movies.map((movie) => (
-          <Link
-            to={`/movies/${movie.imdbID}`}
-            key={movie.imdbID}
-            className="bg-white shadow rounded-lg overflow-hidden hover:shadow-lg transition block"
-          >
-            <img
-              src={
-                movie.Poster !== "N/A"
-                  ? movie.Poster
-                  : "https://via.placeholder.com/300x450"
-              }
-              alt={movie.Title}
-              className="w-full h-80 object-cover"
-            />
-            <div className="p-4">
-              <h3 className="font-bold text-lg">{movie.Title}</h3>
-              <p className="text-gray-600">{movie.Year}</p>
+      {/* Movie Cards */}
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {movies.map((movie) => {
+          const fav = isFavorite(movie.imdbID);
+          return (
+            <div
+              key={movie.imdbID}
+              className="relative bg-white shadow rounded-lg overflow-hidden hover:shadow-lg transition transform hover:-translate-y-1"
+            >
+              {/* Clickable link */}
+              <Link to={`/movies/${movie.imdbID}`}>
+                <img
+                  src={
+                    movie.Poster !== "N/A"
+                      ? movie.Poster
+                      : "https://via.placeholder.com/300x450"
+                  }
+                  alt={movie.Title}
+                  className="w-full h-80 object-cover"
+                />
+                <div className="p-4">
+                  <h3 className="font-bold text-lg truncate">{movie.Title}</h3>
+                  <p className="text-gray-600">{movie.Year}</p>
+                </div>
+              </Link>
+
+              {/* ❤️ Favorite toggle */}
+              <button
+                onClick={() =>
+                  fav ? removeFavorite(movie.imdbID) : addFavorite(movie)
+                }
+                className={`absolute top-2 right-2 text-2xl transition-transform transform hover:scale-110 ${
+                  fav ? "text-red-500" : "text-gray-400"
+                }`}
+                title={fav ? "Remove from favorites" : "Add to favorites"}
+              >
+                {fav ? "❤️" : "🤍"}
+              </button>
             </div>
-          </Link>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
