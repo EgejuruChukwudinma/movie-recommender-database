@@ -3,11 +3,14 @@ import { useSearchParams, Link } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
 
 export default function Movies() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("q"); // get ?q=term
+
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
 
   // filters
   const [year, setYear] = useState("");
@@ -25,7 +28,7 @@ export default function Movies() {
       try {
         let url = `https://www.omdbapi.com/?apikey=${
           import.meta.env.VITE_OMDB_API_KEY
-        }&s=${query}`;
+        }&s=${query}&page=${page}`;
 
         if (year) url += `&y=${year}`;
         if (type) url += `&type=${type}`;
@@ -34,10 +37,11 @@ export default function Movies() {
         const data = await res.json();
 
         if (data.Response === "True") {
-          setMovies(data.Search);
+          setMovies((prev) => (page === 1 ? data.Search : [...prev, ...data.Search]));
+          setTotalResults(parseInt(data.totalResults, 10));
         } else {
+          if (page === 1) setMovies([]);
           setError(data.Error || "No results found");
-          setMovies([]);
         }
       } catch {
         setError("Failed to fetch movies");
@@ -47,7 +51,14 @@ export default function Movies() {
     };
 
     fetchMovies();
+  }, [query, year, type, page]);
+
+  // Reset to page 1 when filters/search change
+  useEffect(() => {
+    setPage(1);
   }, [query, year, type]);
+
+  const hasMore = movies.length < totalResults;
 
   return (
     <div>
@@ -134,7 +145,18 @@ export default function Movies() {
           );
         })}
       </div>
+
+      {/* Pagination */}
+      {hasMore && !loading && (
+        <div className="flex justify-center mt-6">
+          <button
+            onClick={() => setPage((prev) => prev + 1)}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            Load More
+          </button>
+        </div>
+      )}
     </div>
   );
 }
-

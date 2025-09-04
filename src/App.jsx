@@ -1,5 +1,6 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Layout from "./components/Layout"; // Layout will include Navbar
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Movies from "./pages/Movies";
 import About from "./pages/About";
@@ -8,8 +9,12 @@ import Favorites from "./pages/Favorites";
 
 export default function App() {
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100">
+      {/* Navbar always visible */}
+      <Navbar />
+
+      {/* Page content */}
+      <main className="p-4">
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
@@ -19,8 +24,8 @@ export default function App() {
             <Route path="favorites" element={<Favorites />} />
           </Route>
         </Routes>
-      </div>
-    </Router>
+      </main>
+    </div>
   );
 }
 
