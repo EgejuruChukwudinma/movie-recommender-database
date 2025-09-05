@@ -62,26 +62,43 @@ export default function Movies() {
   const hasMore = movies.length < totalResults;
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto">
       {/* Title */}
-      <h2 className="text-2xl font-bold mb-4">
-        {query ? `Results for: "${query}"` : "Search for a movie"}
+      <h2 className="text-3xl font-bold mb-8 text-center text-gray-900 dark:text-gray-100">
+        {query ? `Results for: "${query}"` : "Discover Movies"}
       </h2>
 
-      {/* Filter Section */}
-      <div className="flex flex-wrap gap-4 mb-6 items-center">
+      {/* Centered Search */}
+      <div className="mb-8">
+        <input
+          type="text"
+          placeholder="Search for movies..."
+          className="w-full max-w-2xl mx-auto block px-4 py-3 rounded-xl bg-white dark:bg-gray-800 dark:text-gray-100 dark:border-gray-700 border border-gray-300 focus:ring focus:ring-blue-500/30 focus:outline-none text-center"
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              const searchQuery = e.target.value;
+              if (searchQuery.trim()) {
+                setSearchParams({ q: searchQuery });
+              }
+            }
+          }}
+        />
+      </div>
+
+      {/* Pill Filters */}
+      <div className="flex flex-wrap gap-3 mb-8 justify-center">
         <input
           type="number"
-          placeholder="Year (e.g. 2020)"
+          placeholder="Year"
           value={year}
           onChange={(e) => setYear(e.target.value)}
-          className="border rounded px-3 py-2 w-40"
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 border border-transparent focus:ring-2 focus:ring-blue-500/30 focus:outline-none text-center w-20"
         />
 
         <select
           value={type}
           onChange={(e) => setType(e.target.value)}
-          className="border rounded px-3 py-2"
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 border border-transparent focus:ring-2 focus:ring-blue-500/30 focus:outline-none"
         >
           <option value="">All Types</option>
           <option value="movie">Movies</option>
@@ -94,7 +111,7 @@ export default function Movies() {
             setYear("");
             setType("");
           }}
-          className="bg-gray-200 px-3 py-2 rounded hover:bg-gray-300 transition"
+          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 border border-transparent transition-colors"
         >
           Reset
         </button>
@@ -117,7 +134,7 @@ export default function Movies() {
           return (
             <div
               key={movie.imdbID}
-              className="relative bg-white shadow rounded-lg overflow-hidden hover:shadow-lg transition transform hover:-translate-y-1"
+              className="relative bg-white dark:bg-gray-900 rounded-xl shadow-lg hover:shadow-blue-500/20 transition-all duration-300 transform hover:scale-105 hover:ring-2 hover:ring-blue-500/40 overflow-hidden"
             >
               {/* Clickable link */}
               <Link to={`/movies/${movie.imdbID}`}>
@@ -131,8 +148,8 @@ export default function Movies() {
                   className="w-full h-80 object-cover"
                 />
                 <div className="p-4">
-                  <h3 className="font-bold text-lg truncate">{movie.Title}</h3>
-                  <p className="text-gray-600">{movie.Year}</p>
+                  <h3 className="font-bold text-lg truncate text-gray-900 dark:text-gray-100">{movie.Title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400">{movie.Year}</p>
                 </div>
               </Link>
 
@@ -142,7 +159,7 @@ export default function Movies() {
                   fav ? removeFavorite(movie.imdbID) : addFavorite(movie)
                 }
                 className={`absolute top-2 right-2 text-2xl transition-transform transform hover:scale-110 ${
-                  fav ? "text-red-500" : "text-gray-400"
+                  fav ? "text-red-500" : "text-gray-400 dark:text-gray-500"
                 }`}
                 title={fav ? "Remove from favorites" : "Add to favorites"}
               >
@@ -155,10 +172,10 @@ export default function Movies() {
 
       {/* Pagination */}
       {hasMore && !loading && (
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center mt-8">
           <button
             onClick={() => setPage((prev) => prev + 1)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+            className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-blue-500/30"
           >
             Load More
           </button>
