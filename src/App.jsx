@@ -8,17 +8,15 @@ import Favorites from "./pages/Favorites";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Landing />} />
-          <Route path="movies" element={<Movies />} />
-          <Route path="movies/:id" element={<MovieDetails />} />
-          <Route path="about" element={<About />} />
-          <Route path="favorites" element={<Favorites />} />
-        </Route>
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Landing />} />
+        <Route path="movies" element={<Movies />} />
+        <Route path="movies/:id" element={<MovieDetails />} />
+        <Route path="about" element={<About />} />
+        <Route path="favorites" element={<Favorites />} />
+      </Route>
+    </Routes>
   );
 }
 
