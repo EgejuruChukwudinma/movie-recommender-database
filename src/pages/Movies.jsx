@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
+import SkeletonCard from "../components/SkeletonCard";
 
 export default function Movies() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -100,7 +101,13 @@ export default function Movies() {
       </div>
 
       {/* Loading & Error */}
-      {loading && <p className="text-gray-500">Loading movies...</p>}
+      {loading && (
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <SkeletonCard key={i} />
+          ))}
+        </div>
+      )}
       {error && <p className="text-red-500">{error}</p>}
 
       {/* Movie Cards */}
