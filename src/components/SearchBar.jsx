@@ -17,11 +17,11 @@ export default function SearchBar({ onSearch }) {
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Search for a movie..."
-        className="flex-grow px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-indigo-500"
+        className="flex-grow px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-500"
       />
       <button
         type="submit"
-        className="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
+        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
       >
         Search
       </button>
