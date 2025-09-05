@@ -2,3 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* smooth global transitions */
+* { 
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease; 
+}
+

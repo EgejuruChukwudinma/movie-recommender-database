@@ -4,7 +4,6 @@ import { BrowserRouter } from "react-router-dom";  // 👈 Router here
 import App from "./App";
 import { FavoritesProvider } from "./context/FavoritesContext";
 import ErrorBoundary from "./components/ErrorBoundary";
-import ErrorBoundary from "./components/ErrorBoundary";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

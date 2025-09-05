@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { useFavorites } from "../context/FavoritesContext";
 import SkeletonCard from "../components/SkeletonCard";
-import SkeletonCard from "../components/SkeletonCard";
 
 export default function Movies() {
   const [searchParams, setSearchParams] = useSearchParams();
