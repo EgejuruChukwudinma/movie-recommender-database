@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
-import Home from "./pages/Home";
+import Landing from "./pages/Landing";
 import Movies from "./pages/Movies";
 import About from "./pages/About";
 import MovieDetails from "./pages/MovieDetails";
@@ -11,7 +11,7 @@ export default function App() {
     <div className="min-h-screen bg-gray-100">
       <Routes>
         <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
+          <Route index element={<Landing />} />
           <Route path="movies" element={<Movies />} />
           <Route path="movies/:id" element={<MovieDetails />} />
           <Route path="about" element={<About />} />
